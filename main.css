@@ -13,7 +13,7 @@ body, svg {
 .title {
 	position: absolute;
 	left: 50vw;
-	top: 27vw;
+	top: 45vh;
     transform: translate(-50%, -50%);
 	text-anchor: center;
 }
@@ -55,7 +55,6 @@ body, svg {
 .body-text {
 	font-family: 'Montserrat', sans-serif;
 	font-weight: 400;
-	font-size: 1.5vw;
 }
 
 .scroll-nice::-webkit-scrollbar {

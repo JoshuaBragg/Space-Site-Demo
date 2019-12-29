@@ -103,8 +103,8 @@ function is_smooth(proper_x, proper_y) {
 
 let MIN_POINTS = 4;
 let MAX_POINTS = 7;
-let H_SCALE = 18;
-let G_SCALE = 26;
+let H_SCALE = 0.018 * window.innerWidth;
+let G_SCALE = 0.026 * window.innerWidth;
 
 let pi = Math.PI;
 
@@ -176,6 +176,10 @@ function create_blob(c_x, c_y) {
 let asteroids = [];
 let asteroid_pos = [];
 
+let viewbox = [window.innerWidth, window.innerHeight * 1.01];
+$('svg').attr('viewBox', '0 0 ' + viewbox[0] + ' ' + viewbox[1]);
+let star_rad = 0.01 * window.innerWidth;
+
 let velo = [];
 let rot = [];
 
@@ -184,19 +188,19 @@ let AST_COLOURS = ['312C38', '322E38'];
 
 function init() {
 	for (let i = 0; i < NUM_ASTEROIDS / 1.6; i++) {
-		$('#ast-container').html($('#ast-container').html() + '<path id="star' + i + '" d="M ' + random(10, 990) + ',' + random(10, 510) + ' l 0.001,0"'
+		$('#ast-container').html($('#ast-container').html() + '<path id="star' + i + '" d="M ' + random(star_rad * 2, viewbox[0] - star_rad * 2) + ',' + random(star_rad * 2, viewbox[1] - star_rad * 2) + ' l 0.001,0"'
 			+ ' stroke-width="' + random(2, 8) + '" stroke-linecap="round" stroke="#FCF7F2"></path>');
 	}
 
 	for (let i = 0; i < NUM_ASTEROIDS; i++) {
 		$('#ast-container').html($('#ast-container').html() + '<path id="ast' + i + '" d="" fill="#' + AST_COLOURS[Math.floor(random(0, AST_COLOURS.length))] + '" fill-opacity="1"></path>');
-		velo.push([random(0.4, 1), random(-0.15, 0.15)]);
-		rot.push(random(-0.4, 0.4))
+		velo.push([random(0.0004 * viewbox[0], 0.001 * viewbox[0]), random(-0.00015 * viewbox[0], 0.00015 * viewbox[0])]);
+		rot.push(random(-0.0004 * viewbox[0], 0.0004 * viewbox[0]))
 	}
 
 	for (let i = 0; i < NUM_ASTEROIDS; i++) {
-		let c_x = random(-750, 1000);
-		let c_y = random(0, 520);
+		let c_x = random(-0.75 * viewbox[0], viewbox[0]);
+		let c_y = random(0, viewbox[1]);
 		asteroid_pos.push([c_x, c_y, random(0, 180)]);
 		asteroids.push(create_blob(0, 0));
 		$('#ast' + i).attr('transform', 'translate(' + asteroid_pos[i][0] + ',' + asteroid_pos[i][1] + ')'
@@ -206,10 +210,16 @@ function init() {
 }
 
 function update() {
+	if (viewbox[0] != window.innerWidth || viewbox[1] != window.innerHeight * 1.01) {
+		viewbox[0] = window.innerWidth;
+		viewbox[1] = window.innerHeight * 1.01;
+		$('svg').attr('viewBox', '0 0 ' + viewbox[0] + ' ' + viewbox[1]);
+	}
+
 	for (let i = 0; i < NUM_ASTEROIDS; i++) {
-		if (asteroid_pos[i][0] > 1250) {
-			let c_x = -300; // random(-750, -150);
-			let c_y = random(0, 520);
+		if (asteroid_pos[i][0] > viewbox[0] * 1.25) {
+			let c_x = -0.3 * viewbox[0];
+			let c_y = random(0, viewbox[1]);
 			asteroid_pos[i] = [c_x, c_y, random(0, 180)];
 			asteroids[i] = create_blob(0, 0);
 			$('#ast' + i).attr('transform', 'translate(' + asteroid_pos[i][0] + ',' + asteroid_pos[i][1] + ')'
